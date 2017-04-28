@@ -5,13 +5,17 @@ window.onload = function() {
 		height = canvas.height = window.innerHeight,
 		ship = shipFactory.create(width, height);
 		targets = [];
-
+		color_set = ["#ffffff", "#ffe5e5", "#ffcccc", "#ffb3b3", "#ff9999",
+					 "#ff8080","#ff6666", "#ff4d4d", "#ff3333", "#ff1a1a",
+					 " #ff0000"];
+		rand_colors = ["blue", "green", "black", "magenta", "red", "yellow"]
 		// number of tagets
-		no_targets = 5;
+		no_targets = 20;
 
 		for (i = 0; i < no_targets; i++) {
-			targets.push(target.create(width * Math.random(), height * Math.random(),  50 , Math.random() * Math.PI, 0, 50));
-	  }
+			var redius = Math.floor(Math.random() * (50 - 20 + 1)) + 20
+			targets.push(target.create(width * Math.random(), height * Math.random(),  50 , Math.random() * Math.PI, 0, redius));
+	    }
 		update();
 
 		// document.body.addEventListener("click", function(event) {
@@ -52,6 +56,9 @@ window.onload = function() {
 			}
 		});
 
+		function getRandomColor() {
+			return rand_colors[Math.min(5,Math.floor(Math.random()*10) % 5)]
+		}
 		function drawShip(ship) {
 			context.save();
 			context.translate(ship.part.x, ship.part.y);
@@ -65,17 +72,17 @@ window.onload = function() {
 			context.lineTo(10, -7);
 			context.moveTo(-10, 7);
 			context.lineTo(10, 7);
+			context.fill();
+			context.fillStyle = "black";
 			if (ship.thrusting) {
 				context.moveTo(-10,0);
 				context.lineTo(-18, 0);
 			}
-			context.moveTo(10, 0);
-			context.lineTo(400, 0);
-			context.strokeStyle = '#ff0000';
+			context.strokeStyle = getRandomColor();
  			context.stroke();
 			context.restore();
 			ship.update();
-			utils.boundParticleToRect(ship, width, height);
+			utils.boundParticleToRect(ship.part, width, height);
 		}
 
 		function checkColisions(shot) {
@@ -95,9 +102,7 @@ window.onload = function() {
 		}
 
 		function get_color_target(nr_of_hits){
-			color_set = ["#ffffff", "#ffe5e5", "#ffcccc", "#ffb3b3", "#ff9999",
-						 "#ff8080","#ff6666", "#ff4d4d", "#ff3333", "#ff1a1a",
-						 " #ff0000"];
+
 			return color_set[nr_of_hits];
 		}
 
@@ -120,7 +125,7 @@ window.onload = function() {
 			    context.shadowOffsetY = 15;
 
 				// Draw the number of hits of the target.
-				context.fillText(el.nrHits, el.particle.x-15, el.particle.y+10);
+				//context.fillText(el.nrHits, el.particle.x-15, el.particle.y+10);
 				utils.bounceParticleInRect(el.particle, width, height);
 			});
 		}
@@ -138,7 +143,7 @@ window.onload = function() {
 					}
 					else if (el.explosionParticles.length > 0 ) {
 						el.explosionParticles.forEach(function(el) {
-							utils.drawParticle(el, context, 'blue');
+							utils.drawParticle(el, context, getRandomColor());
 						});
 					}
 					else {

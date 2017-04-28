@@ -7,7 +7,7 @@ var shot = {
 
   create : function (x, y, speed, direction, radius) {
     var obj = Object.create(this);
-    obj.initPart = particle.create(x, y, speed, direction, 0, radius);
+    obj.initPart = new particle(x, y, speed, direction, 0, radius);
     return obj;
   },
 
@@ -34,7 +34,7 @@ var shot = {
   initParticles: function (x, y) {
     var particles = [];
     for (var i = 0; i < 10; i++) {
-      particles.push(particle.create(x, y, Math.random() * 2, Math.PI / Math.random(), 0.05, Math.random() * 5));
+      particles.push(new particle(x, y, Math.random() * 2, Math.PI / Math.random(), 0.05, Math.random() * 5));
     }
     return particles;
   },

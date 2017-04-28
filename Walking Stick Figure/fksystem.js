@@ -29,7 +29,7 @@ var FKSystem = FKSystem || {
     },
 
     update: function () {
-        for(var i = 0; i < this.arms.length; i++){
+        for(var i = 0; i < this.arms.length; i++) {
             var arm = this.arms[i];
             arm.setPhase(this.phase);
             if (arm.parent) {
@@ -44,10 +44,10 @@ var FKSystem = FKSystem || {
         this.phase += this.speed;
     },
 
-    render: function (context) {
+    render: function (context, lineWidth=5) {
         for (var i = 0; i < this.arms.length; i++) {
             var arm = this.arms[i];
-            arm.render(context);
+            arm.render(context, lineWidth);
         }
     },
 

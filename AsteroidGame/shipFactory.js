@@ -1,6 +1,6 @@
 var shipFactory = {
     friction : 0.99,
-    thrust: vector.create(0, 0),
+    thrust: new vector(0, 0),
     angle: 0,
     thrusting: false,
     shotsFired: 0,
@@ -10,7 +10,7 @@ var shipFactory = {
 
     create : function (screenWidth, screenHeight) {
         var obj = Object.create(this);
-        obj.part = particle.create(screenWidth / 2, screenHeight / 2, 0, 0, 0);
+        obj.part = new particle(screenWidth / 2, screenHeight / 2, 0, 0, 0);
         obj.part.friction = this.friction;
         obj.angle = this.angle;
         obj.thrust = this.thrust;

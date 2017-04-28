@@ -4,7 +4,7 @@ var target = {
 
   create : function (x, y, speed, direction, grav, radius) {
     var obj = Object.create(this);
-    obj.particle = particle.create(x, y, speed, direction, grav, radius);
+    obj.particle = new particle(x, y, speed, direction, grav, radius);
     obj.particle.friction = 0.99;
     return obj;
   },
