@@ -1,30 +1,28 @@
-var target = {
-  particle : null,
-  nrHits: 0,
+class Target {
+  constructor(x, y, speed, direction, grav, radius) {   
+    this.particle = new Particle(x, y, speed, direction, grav, radius);
+    this.particle.friction = 0.99;
+    this.nrHits = 0
+    this.colorSet = ["#ffffff", "#ffe5e5", "#ffcccc", "#ffb3b3", "#ff9999",
+    "#ff8080","#ff6666", "#ff4d4d", "#ff3333", "#ff1a1a",
+    " #ff0000"];
+  } 
 
-  create : function (x, y, speed, direction, grav, radius) {
-    var obj = Object.create(this);
-    obj.particle = new particle(x, y, speed, direction, grav, radius);
-    obj.particle.friction = 0.99;
-    return obj;
-  },
+  getColorTarget() {
+    return this.colorSet[this.nrHits];
+  }
 
-  isDestroyed : function () {
-    if (this.nrHits > 10 ) {
-      return true;
-    }
-    return false;
-  },
+  isDestroyed() {
+    return this.nrHits > 10
+  }
 
-  update : function () {
-    if (this.particle) {
-      this.particle.update();
-    }
-  },
+  update() {
+    this.particle.update();
+  }
 
-  hit : function () {
+  hit() {
     this.nrHits += 1;
     this.particle.friction += (1 - this.particle.friction);
   }
 
-};
+}

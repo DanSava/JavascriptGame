@@ -10,7 +10,7 @@ var shipFactory = {
 
     create : function (screenWidth, screenHeight) {
         var obj = Object.create(this);
-        obj.part = new particle(screenWidth / 2, screenHeight / 2, 0, 0, 0);
+        obj.part = new Particle(screenWidth / 2, screenHeight / 2, 0, 0, 0);
         obj.part.friction = this.friction;
         obj.angle = this.angle;
         obj.thrust = this.thrust;

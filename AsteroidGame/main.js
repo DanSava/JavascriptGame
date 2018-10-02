@@ -5,60 +5,54 @@ window.onload = function() {
 		height = canvas.height = window.innerHeight,
 		ship = shipFactory.create(width, height);
 		targets = [];
-		color_set = ["#ffffff", "#ffe5e5", "#ffcccc", "#ffb3b3", "#ff9999",
-					 "#ff8080","#ff6666", "#ff4d4d", "#ff3333", "#ff1a1a",
-					 " #ff0000"];
 		rand_colors = ["blue", "green", "black", "magenta", "red", "yellow"]
 		// number of tagets
 		no_targets = 20;
 
-		for (i = 0; i < no_targets; i++) {
-			var redius = Math.floor(Math.random() * (50 - 20 + 1)) + 20
-			targets.push(target.create(width * Math.random(), height * Math.random(),  50 , Math.random() * Math.PI, 0, redius));
-	    }
-		update();
+	let rendere = new Renderer(context, width, height)
+	for (i = 0; i < no_targets; i++) {
+		var redius = Math.floor(Math.random() * (50 - 20 + 1)) + 20
+		targets.push(new Target(width * Math.random(), height * Math.random(),  50 , Math.random() * Math.PI, 0, redius));
+	}
+	update();
+		
+	canvas.addEventListener("mousedown", function(event) {
+		console.log("button",event.button);
+		console.log("buttons",event.buttons);
+	});
 
-		// document.body.addEventListener("click", function(event) {
-		// });
+	canvas.addEventListener("mousemove", function(event) {
+		dx = event.clientX - ship.part.x;
+		dy = event.clientY - ship.part.y;
+		ship.angle = Math.atan2(dy , dx);
+	});
 
-		document.body.addEventListener("mousedown", function(event) {
-			console.log("button",event.button);
-			console.log("buttons",event.buttons);
-		});
+	document.body.addEventListener("keydown", function(event) {
+		// console.log(event.keyCode);
+		switch (event.keyCode) {
+			case 87://"w"
+				ship.thrusting = true;
+				break;
+			case 32://"space"
+				ship.shoot();
+				break;
+			default:
+		}
+	});
 
-		document.body.addEventListener("mousemove", function(event) {
-			dx = event.clientX - ship.part.x;
-			dy = event.clientY - ship.part.y;
-			ship.angle = Math.atan2(dy , dx);
-		});
-
-		document.body.addEventListener("keydown", function(event) {
-			//
-			// console.log(event.keyCode);
-			switch (event.keyCode) {
-				case 87://"w"
-					ship.thrusting = true;
-					break;
-				case 32://"space"
-					ship.shoot();
-					break;
-				default:
-			}
-		});
-
-		document.body.addEventListener("keyup", function(event) {
-			//
-			//console.log(event.keyCode);
-			switch (event.keyCode) {
-				case 87://up
-					ship.thrusting = false;
-					break;
-			}
-		});
+	document.body.addEventListener("keyup", function(event) {
+		//console.log(event.keyCode);
+		switch (event.keyCode) {
+			case 87://up
+				ship.thrusting = false;
+				break;
+		}
+	});
 
 		function getRandomColor() {
 			return rand_colors[Math.min(5,Math.floor(Math.random()*10) % 5)]
 		}
+
 		function drawShip(ship) {
 			context.save();
 			context.translate(ship.part.x, ship.part.y);
@@ -101,31 +95,12 @@ window.onload = function() {
 			});
 		}
 
-		function get_color_target(nr_of_hits){
 
-			return color_set[nr_of_hits];
-		}
 
 		function drawTargets() {
 			targets.forEach(function(el, index, array){
-				el.particle.update();
-		    	context.beginPath();
-		    	context.arc(el.particle.x,el.particle.y, el.particle.radius , 0, Math.PI * 2, false);
-				context.fill();
-				context.beginPath();
-				context.arc(el.particle.x,el.particle.y, el.particle.radius - 15 , 0, Math.PI * 2, false);
-				context.fillStyle = get_color_target(el.nrHits);
-				context.fill();
-				context.fillStyle = "black";
-
-				// Draw the shadow of the target circle
-				context.shadowColor = '#999';
-			    context.shadowBlur = 20;
-			    context.shadowOffsetX = 15;
-			    context.shadowOffsetY = 15;
-
-				// Draw the number of hits of the target.
-				//context.fillText(el.nrHits, el.particle.x-15, el.particle.y+10);
+				el.update();
+				rendere.draw_target(el)
 				utils.bounceParticleInRect(el.particle, width, height);
 			});
 		}
@@ -133,7 +108,7 @@ window.onload = function() {
 		function update() {
 			context.clearRect(0, 0, width, height);
 	 		drawShip(ship);
-			if (ship.shots.length > 0 ){
+			if (ship.shots.length > 0 ) {
 				ship.shots.forEach(function(el, index, array){
 					el.update(width, height);
 					if (el.initPart){
@@ -151,7 +126,6 @@ window.onload = function() {
 						 ship.shots.splice(index, 1);
 					}
 				});
-
 			}
 			drawTargets();
 			context.font = 'bold 20pt Calibri';
@@ -159,10 +133,10 @@ window.onload = function() {
 			if (ship.shotsFired > 0) {
 					acc = Math.floor(ship.hits/ship.shotsFired * 100);
 			}
-			if (no_targets > 0 ){
+			if (no_targets > 0 ) {
 				context.fillText('Shots: ' + ship.shotsFired + ' Hits: ' + ship.hits + ' Acuracy: ' + acc + '%' + 'Targets: ' + no_targets, 0, 20);
 			}
-			else{
+			else {
 				context.fillText('Game Over!' , 0, 20);
 			}
 			requestAnimationFrame(update);
